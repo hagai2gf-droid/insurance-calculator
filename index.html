@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>מחשבון דרכון FIRST CLASS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: form column + sticky quote slip on desktop; one column, slip at the bottom, on phones. */
+:root {
+  --bg: #eef2f7;
+  --surface: #ffffff;
+  --line: #d6dee9;
+  --fg: #14213a;
+  --muted: #5b6a82;
+  --accent: #1d5fd1;
+  --accent-soft: #e4edfc;
+  --navy: #0d2550;
+  --on-navy: #ffffff;
+  --warn: #b42318;
+  --warn-soft: #fdecea;
+  --font-body: "Heebo", "Arial Hebrew", Arial, sans-serif;
+  --font-num: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c1424; --surface: #152038; --line: #26355a; --fg: #e6ecf7; --muted: #95a3bd;
+    --accent: #6b9cf5; --accent-soft: #1b2c52; --navy: #1b3a78; --on-navy: #ffffff;
+    --warn: #ff9d94; --warn-soft: #3a1a1c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c1424; --surface: #152038; --line: #26355a; --fg: #e6ecf7; --muted: #95a3bd;
+  --accent: #6b9cf5; --accent-soft: #1b2c52; --navy: #1b3a78; --on-navy: #ffffff;
+  --warn: #ff9d94; --warn-soft: #3a1a1c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.5;
+  padding-block: 24px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1080px; margin: 0 auto; display: grid; gap: 20px; }
+header h1 { margin: 0; font-size: 1.75rem; font-weight: 800; text-wrap: balance; }
+header p { margin: 4px 0 0; color: var(--muted); font-size: .9rem; }
+.grid { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) 330px; align-items: start; }
+@media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.col { display: grid; gap: 16px; min-width: 0; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.panel h2 { margin: 0; font-size: 1.05rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.seg button { font: inherit; padding: 10px; border: 0; background: transparent; color: var(--fg); cursor: pointer; font-weight: 500; }
+.seg button[aria-pressed="true"] { background: var(--navy); color: var(--on-navy); }
+.fields { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+label.f { display: grid; gap: 4px; font-size: .85rem; color: var(--muted); }
+input, select { font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; width: 100%; min-width: 0; }
+input:disabled { opacity: .6; }
+input[type="checkbox"] { width: 18px; height: 18px; padding: 0; accent-color: var(--accent); flex: none; margin-top: 2px; }
+input.n { width: 64px; padding: 4px 6px; text-align: center; font-family: var(--font-num); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: .9rem; cursor: pointer; }
+.link { font: inherit; background: none; border: 0; color: var(--accent); cursor: pointer; padding: 0; font-size: .9rem; font-weight: 500; text-align: start; }
+.link.del { color: var(--warn); font-size: .85rem; }
+.addons { border: 1px solid var(--line); border-radius: 10px; }
+.addon { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 9px 12px; border-top: 1px solid var(--line); }
+.addon:first-child { border-top: 0; }
+.addon.off { opacity: .45; }
+.addon .check { flex: 1 1 220px; min-width: 0; }
+.addon small { display: block; color: var(--muted); font-size: .78rem; }
+.addon small.err { color: var(--warn); }
+.mini { display: flex; align-items: center; gap: 6px; font-size: .8rem; color: var(--muted); }
+.rate { font-size: .82rem; color: var(--muted); min-width: 92px; text-align: left; font-variant-numeric: tabular-nums; }
+.errs { margin: 0; padding: 10px 12px; list-style: none; background: var(--warn-soft); color: var(--warn); border-radius: 8px; font-size: .85rem; display: grid; gap: 2px; }
+.preset { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.btn { font: inherit; font-weight: 500; padding: 9px 14px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent-soft); color: var(--accent); cursor: pointer; }
+.btn:hover { background: var(--accent); color: var(--surface); }
+.add { font: inherit; font-weight: 500; padding: 12px; border: 2px dashed var(--line); border-radius: 12px; background: transparent; color: var(--muted); cursor: pointer; }
+.add:hover { color: var(--fg); border-color: var(--muted); }
+.slip { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); }
+.slip .head { background: var(--navy); color: var(--on-navy); margin: -18px -18px 0; padding: 16px 18px; border-radius: 12px 12px 0 0; }
+.slip .head .lbl { font-size: .8rem; opacity: .8; letter-spacing: .03em; }
+.slip .head .total { font-family: var(--font-num); font-size: 2rem; font-weight: 500; direction: ltr; text-align: right; font-variant-numeric: tabular-nums; }
+.slip .meta { font-size: .82rem; color: var(--muted); }
+.who { display: grid; gap: 4px; padding-top: 10px; border-top: 1px solid var(--line); }
+.who:first-of-type { border-top: 0; padding-top: 0; }
+.row { display: flex; justify-content: space-between; gap: 10px; font-size: .82rem; color: var(--muted); }
+.row.top { font-size: .92rem; color: var(--fg); font-weight: 700; }
+.row .amt { font-family: var(--font-num); direction: ltr; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.row .calc { display: block; font-family: var(--font-num); font-size: .74rem; direction: ltr; text-align: right; opacity: .8; }
+.fine { font-size: .75rem; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { .seg button, .add { transition: background .15s, color .15s, border-color .15s; } }
+</style>
+</head>
+<body>
+
+<div class="wrap" dir="rtl" lang="he">
+  <header>
+    <h1>מחשבון ביטוח נסיעות לחו״ל</h1>
+    <p>הראל · דרכון FIRST CLASS · פוליסת פרט · מחירון 2026 · מחירים בדולר, בכפוף לתנאי הפוליסה והנחיות החיתום</p>
+  </header>
+
+  <div class="grid">
+    <div class="col">
+      <section class="panel">
+        <h2>פרטי הנסיעה</h2>
+        <div class="seg" role="group" aria-label="יעד">
+          <button type="button" id="dest-world" aria-pressed="true">כל היעדים (למעט ארה״ב)</button>
+          <button type="button" id="dest-usa" aria-pressed="false">ארצות הברית</button>
+        </div>
+        <div class="fields">
+          <label class="f">יציאה<input type="date" id="from"></label>
+          <label class="f">חזרה<input type="date" id="to"></label>
+          <label class="f">ימי נסיעה<input type="number" id="days" min="1" value="10" inputmode="numeric"></label>
+        </div>
+        <div class="preset">
+          <button type="button" class="btn" id="preset">פוליסה מוצעת לכל המבוטחים</button>
+          <span class="fine">בסיס + כבודה + ביטול וקיצור נסיעה + תאונות אישיות (עד גיל 70)</span>
+        </div>
+      </section>
+
+      <div id="travelers" class="col"></div>
+      <button type="button" class="add" id="add-traveler">+ הוספת מבוטח/ת</button>
+
+      <section class="panel">
+        <h2>רכב שכור</h2>
+        <p class="fine" style="margin:0">ביטול השתתפות עצמית בנזק תאונתי. מחיר אחד לכל המבוטחים בפוליסה (נדרש מבוטח בגיל 24-75). ניתן לרכוש לחלק מהנסיעה.</p>
+        <div class="fields">
+          <label class="f">כיסוי
+            <select id="car">
+              <option value="">ללא</option>
+              <option value="0">עד $1,500 · $6.50 ליום, עד $88 לנסיעה</option>
+              <option value="1">עד $6,000 · $26.00 ליום, עד $88 לנסיעה</option>
+            </select>
+          </label>
+          <label class="f" id="car-days-wrap" hidden>ימים<input type="number" id="car-days" min="1" inputmode="numeric"></label>
+        </div>
+      </section>
+    </div>
+
+    <aside class="panel slip" aria-live="polite">
+      <div class="head">
+        <div class="lbl">סה״כ לפוליסה</div>
+        <div class="total" id="total">$0.00</div>
+      </div>
+      <div class="meta" id="meta"></div>
+      <div id="breakdown" style="display:grid;gap:10px"></div>
+      <ul class="errs" id="trip-errs" hidden></ul>
+      <p class="fine" style="margin:0">החישוב להמחשה בלבד לפי טבלת התעריפים. המחיר הסופי נקבע בדף פרטי הביטוח.</p>
+    </aside>
+  </div>
+</div>
+
+<script>
+// ---- Rate sheet: Harel Darkon FIRST CLASS, agents' price list 2026 (USD per insured per day) ----
+// [minAge, maxAge, rate days 1-14, rate from day 15, max trip days]. Ages 0-50 pay +$0.30/day from day 15.
+const BASE = {
+  WORLD: { firstDays: 14, bands: [
+    [0,50,2.5,2.8,365],[51,60,2.5,2.5,180],[61,65,3.8,3.8,120],[66,70,4.8,4.8,120],
+    [71,75,6.55,6.55,120],[76,80,11.6,11.6,60],[81,85,11.6,11.6,30],[86,95,17.5,17.5,30]] },
+  USA: { firstDays: 14, bands: [
+    [0,50,3.5,3.8,365],[51,60,3.5,3.5,180],[61,65,6.8,6.8,120],[66,70,9.7,9.7,120],
+    [71,75,11.6,11.6,120],[76,80,21.2,21.2,60],[81,85,21.2,21.2,30],[86,95,32.5,32.5,30]] },
+};
+const SAR = 0.2;
+const ALL = r => [[0,120,r]];
+const ADDONS = [
+  { id:"baggage", label:"כבודה", note:"לכל תקופת הנסיעה", bands:ALL(0.39) },
+  { id:"valuable", label:"פריט יקר ערך (עד $2,000)", note:"מצלמה, רחפן, תשמישי קדושה, עגלת תינוק, גלשן, כסא גלגלים, קלנועית, כלי נגינה · לפי פריט", bands:ALL(1.0), requires:"baggage", perItem:true },
+  { id:"cancel", label:"ביטול וקיצור נסיעה מסיבה רפואית", note:"כולל כיסוי למגיפה", excludes:["cancelPlus"],
+    bands:[[0,17,.65],[18,40,.7],[41,50,1],[51,60,1],[61,75,1.5],[76,85,2.8],[86,120,4.2]] },
+  { id:"cancelPlus", label:"ביטול וקיצור נסיעה מורחב", note:"עד $10,000 ביטול · $12,000 קיצור · $3,000 כרטיס · כולל מגיפה", excludes:["cancel"],
+    bands:[[0,17,.9],[18,40,1],[41,50,1.7],[51,60,2.6],[61,75,3.8],[76,85,5.5],[86,120,8]] },
+  { id:"preexisting", label:"החמרה של מצב רפואי קודם",
+    bands:[[0,17,3.35],[18,50,4.05],[51,60,5],[61,65,6.25],[66,70,6.5],[71,75,9],[76,85,15],[86,95,22]] },
+  { id:"pregnancy", label:"הריון עד שבוע 32", note:"למבוטחת בגיל 18-42 · לא יחד עם ספורט אתגרי או ספורט חורף", excludes:["extremeSport","winterSport"], bands:{ WORLD:[[18,42,5]], USA:[[18,42,10]] } },
+  { id:"extremeSport", label:"ספורט אתגרי חובבני", note:"ניתן לחלק מהנסיעה · לא יחד עם הריון", partial:true, excludes:["pregnancy"], bands:[[0,75,.5],[76,85,2]] },
+  { id:"winterSport", label:"ספורט חורף", note:"ניתן לחלק מהנסיעה · לא יחד עם הריון", partial:true, excludes:["pregnancy"], bands:[[0,75,9.5],[76,80,13.5]] },
+  { id:"proSport", label:"ספורט מקצועני בשכר", note:"עד $25 לנסיעה · ניתן לחלק מהנסיעה", partial:true, cap:25, bands:[[0,80,2.5]] },
+  { id:"laptop", label:"אובדן או גניבה של מחשב נישא / טאבלט", bands:ALL(2) },
+  { id:"phone", label:"אובדן או גניבה של טלפון נייד", bands:ALL(1.6) },
+  { id:"accident", label:"נספח לביטוח תאונות אישיות", bands:[[0,17,.25],[18,40,.4],[41,50,.7],[51,60,.96],[61,70,1.08]] },
+  { id:"accidentSport", label:"הרחבה לספורט אתגרי בתאונות אישיות", requires:"accident",
+    bands:[[0,17,.1],[18,40,.15],[41,50,.25],[51,60,.35],[61,70,.4]] },
+];
+const BIKES = [[2500,1.33],[4500,2.46],[6000,3.3]];
+const BIKE_MAX_DAYS = 90;
+const CAR = [{ label:"השתתפות עצמית ברכב שכור עד $1,500", rate:6.5, cap:88 }, { label:"השתתפות עצמית ברכב שכור עד $6,000", rate:26, cap:88 }];
+
+// ---- Pricing ----
+const r2 = n => Math.round(n * 100) / 100;
+const usd = n => (n < 0 ? "-$" : "$") + Math.abs(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const band = (bands, age) => bands.find(b => age >= b[0] && age <= b[1]);
+const addonRate = (a, dest, age) => { const b = band(Array.isArray(a.bands) ? a.bands : a.bands[dest], age); return b ? b[2] : undefined; };
+const byId = id => ADDONS.find(a => a.id === id);
+
+function quoteTraveler(t, dest, days) {
+  const lines = [], errors = [];
+  const base = BASE[dest], b = band(base.bands, t.age);
+  if (b === undefined) return { lines, total: 0, errors: [`גיל ${t.age}: אין כיסוי, הפוליסה עד גיל 95`] };
+  if (days > b[4]) errors.push(`לגיל ${t.age} התקופה המרבית היא ${b[4]} יום`);
+  const first = Math.min(days, base.firstDays), later = days - first;
+  if (first) lines.push([`בסיס, ימים 1-${first}`, `${first} × $${b[2].toFixed(2)}`, first * b[2]]);
+  if (later) lines.push([`בסיס, מהיום ה-${base.firstDays + 1}${b[3] > b[2] ? ` (+$${(b[3] - b[2]).toFixed(2)})` : ""}`, `${later} × $${b[3].toFixed(2)}`, later * b[3]]);
+  if (t.noSar && days) lines.push(["הסרת חיפוש וחילוץ", `${days} × -$${SAR.toFixed(2)}`, -days * SAR]);
+  for (const a of ADDONS) {
+    const v = t.addons[a.id] || 0;
+    if (!v) continue;
+    const rate = addonRate(a, dest, t.age);
+    if (rate === undefined) { errors.push(`${a.label}: לא זמין לגיל ${t.age}`); continue; }
+    if (a.requires && !t.addons[a.requires]) errors.push(`${a.label}: נמכר רק יחד עם "${byId(a.requires).label}"`);
+    const d = a.partial ? Math.min(v, days) : days, count = a.perItem ? v : 1;
+    let amt = d * rate * count, calc = `${d} × $${rate.toFixed(2)}${count > 1 ? ` × ${count}` : ""}`;
+    if (a.cap !== undefined && amt > a.cap) { amt = a.cap; calc += ` (cap $${a.cap})`; }
+    lines.push([a.label, calc, amt]);
+  }
+  if (t.bike) {
+    const [sum, rate] = BIKES[t.bike.idx];
+    const d = Math.min(t.bike.days, days);
+    if (d > BIKE_MAX_DAYS) errors.push(`אופניים: עד ${BIKE_MAX_DAYS} יום`);
+    lines.push([`אופניים, סכום ביטוח $${sum.toLocaleString("en-US")}`, `${d} × $${rate.toFixed(2)}${t.bike.count > 1 ? ` × ${t.bike.count}` : ""}`, d * rate * t.bike.count]);
+  }
+  const rounded = lines.map(([l, c, a]) => [l, c, r2(a)]);
+  return { lines: rounded, total: r2(rounded.reduce((s, l) => s + l[2], 0)), errors };
+}
+
+// ---- State & UI ----
+const state = { dest: "WORLD", manualDays: 10, from: "", to: "", car: null, carDays: 0,
+  travelers: [{ age: 35, noSar: false, addons: { baggage: 1 }, bike: null, open: true }] };
+const $ = id => document.getElementById(id);
+const intv = v => Math.max(0, Math.floor(Number(v) || 0));
+
+function tripDays() {
+  if (state.from && state.to) {
+    const ms = Date.parse(state.to) - Date.parse(state.from);
+    return Number.isFinite(ms) && ms >= 0 ? Math.round(ms / 86400000) + 1 : 0;
+  }
+  return state.manualDays;
+}
+
+function addonRowHTML(ti, a) {
+  const id = `t${ti}-${a.id}`;
+  let extra = "";
+  if (a.partial) extra = `<label class="mini" data-show="${a.id}">ימים <input class="n" type="number" min="1" id="${id}-n" data-t="${ti}" data-qty="${a.id}"></label>`;
+  if (a.perItem) extra = `<label class="mini" data-show="${a.id}">פריטים <input class="n" type="number" min="1" id="${id}-n" data-t="${ti}" data-qty="${a.id}"></label>`;
+  return `<div class="addon" data-row="${a.id}">
+    <label class="check"><input type="checkbox" id="${id}" data-t="${ti}" data-addon="${a.id}">
+      <span>${a.label}${a.note ? `<small>${a.note}</small>` : ""}<small class="err" data-why></small></span></label>
+    ${extra}<span class="rate" data-rate></span></div>`;
+}
+
+function buildTravelers() {
+  const box = $("travelers");
+  box.innerHTML = state.travelers.map((t, i) => `
+    <section class="panel" data-ti="${i}">
+      <h2>מבוטח/ת ${i + 1}${state.travelers.length > 1 ? `<button type="button" class="link del" data-remove="${i}">הסרה</button>` : ""}</h2>
+      <div class="fields">
+        <label class="f">שם (לא חובה)<input id="t${i}-name" data-t="${i}" data-field="name" value="${(t.name || "").replace(/"/g, "&quot;")}"></label>
+        <label class="f">גיל<input type="number" id="t${i}-age" min="0" max="95" inputmode="numeric" data-t="${i}" data-field="age" value="${t.age}"></label>
+      </div>
+      <label class="check"><input type="checkbox" id="t${i}-sar" data-t="${i}" data-field="noSar"${t.noSar ? " checked" : ""}> הסרת כיסוי חיפוש, איתור וחילוץ (‎-$0.20 ליום)</label>
+      <button type="button" class="link" data-toggle="${i}" aria-expanded="${t.open}"></button>
+      <div class="addons" data-addons${t.open ? "" : " hidden"}>
+        ${ADDONS.map(a => addonRowHTML(i, a)).join("")}
+        <div class="addon" data-row="bike">
+          <label class="check"><input type="checkbox" id="t${i}-bike" data-t="${i}" data-bike="on"><span>אופניים<small>לזוג אופניים, עד 90 יום</small></span></label>
+          <label class="mini" data-show="bike"><select id="t${i}-bike-sum" data-t="${i}" data-bike="idx">${BIKES.map(([s, r], k) => `<option value="${k}">$${s.toLocaleString("en-US")} · $${r.toFixed(2)} ליום</option>`).join("")}</select></label>
+          <label class="mini" data-show="bike">כמות <input class="n" type="number" min="1" id="t${i}-bike-count" data-t="${i}" data-bike="count"></label>
+          <label class="mini" data-show="bike">ימים <input class="n" type="number" min="1" max="90" id="t${i}-bike-days" data-t="${i}" data-bike="days"></label>
+        </div>
+      </div>
+      <ul class="errs" data-errs hidden></ul>
+    </section>`).join("");
+  refresh();
+}
+
+function refresh() {
+  const days = tripDays(), dest = state.dest;
+  $("days").value = days;
+  $("days").disabled = Boolean(state.from && state.to);
+  $("dest-world").setAttribute("aria-pressed", dest === "WORLD");
+  $("dest-usa").setAttribute("aria-pressed", dest === "USA");
+
+  const quotes = state.travelers.map(t => quoteTraveler(t, dest, days));
+  state.travelers.forEach((t, i) => {
+    const sec = document.querySelector(`[data-ti="${i}"]`);
+    const count = Object.values(t.addons).filter(Boolean).length + (t.bike ? 1 : 0);
+    sec.querySelector("[data-toggle]").textContent = `${t.open ? "▾" : "◂"} הרחבות בתוספת תשלום${count ? ` (${count})` : ""}`;
+    for (const a of ADDONS) {
+      const row = sec.querySelector(`[data-row="${a.id}"]`);
+      const rate = addonRate(a, dest, t.age), v = t.addons[a.id] || 0;
+      const needs = a.requires && !t.addons[a.requires];
+      const cb = row.querySelector("[data-addon]");
+      cb.checked = Boolean(v);
+      cb.disabled = !v && (rate === undefined || needs);
+      row.classList.toggle("off", rate === undefined || Boolean(needs));
+      row.querySelector("[data-rate]").textContent = rate === undefined ? "—" : `$${rate.toFixed(2)} ליום`;
+      row.querySelector("[data-why]").textContent = rate === undefined ? `לא זמין לגיל ${t.age}` : needs ? `מחייב: ${byId(a.requires).label}` : "";
+      const q = row.querySelector("[data-show]");
+      if (q) { q.hidden = !v; const n = q.querySelector("input"); if (v && document.activeElement !== n) n.value = v; }
+    }
+    const brow = sec.querySelector('[data-row="bike"]');
+    brow.querySelector('[data-bike="on"]').checked = Boolean(t.bike);
+    brow.querySelectorAll("[data-show]").forEach(el => el.hidden = !t.bike);
+    if (t.bike) {
+      brow.querySelector('[data-bike="idx"]').value = t.bike.idx;
+      for (const k of ["count", "days"]) { const el = brow.querySelector(`[data-bike="${k}"]`); if (document.activeElement !== el) el.value = t.bike[k]; }
+    }
+    const ul = sec.querySelector("[data-errs]");
+    ul.hidden = !quotes[i].errors.length;
+    ul.innerHTML = quotes[i].errors.map(e => `<li>⚠ ${e}</li>`).join("");
+  });
+
+  // Car excess, once for the whole policy
+  const tripErrs = [];
+  let carLine = null;
+  $("car-days-wrap").hidden = state.car === null;
+  if (state.car !== null) {
+    const c = CAR[state.car], d = Math.min(state.carDays || days, days), raw = d * c.rate;
+    if (document.activeElement !== $("car-days")) $("car-days").value = state.carDays || days;
+    if (!state.travelers.some(t => t.age >= 24 && t.age <= 75)) tripErrs.push("רכב שכור: נדרש לפחות מבוטח אחד בגיל 24-75");
+    carLine = [c.label, `${d} × $${c.rate.toFixed(2)}${raw > c.cap ? ` (cap $${c.cap})` : ""}`, r2(Math.min(raw, c.cap))];
+  }
+  if (days < 1) tripErrs.push("יש להזין מספר ימי נסיעה");
+
+  const total = r2(quotes.reduce((s, q) => s + q.total, 0) + (carLine ? carLine[2] : 0));
+  $("total").textContent = usd(total);
+  $("meta").textContent = `${dest === "USA" ? "ארצות הברית" : "כל היעדים"} · ${days} ימים · ${state.travelers.length} ${state.travelers.length === 1 ? "מבוטח/ת" : "מבוטחים"}`;
+  const lineHTML = ([l, c, a]) => `<div class="row"><span>${l}<span class="calc">${c}</span></span><span class="amt">${usd(a)}</span></div>`;
+  $("breakdown").innerHTML = quotes.map((q, i) => {
+    const t = state.travelers[i];
+    return `<div class="who"><div class="row top"><span>${(t.name || "").replace(/</g, "&lt;") || `מבוטח/ת ${i + 1}`} · גיל ${t.age}</span><span class="amt">${usd(q.total)}</span></div>${q.lines.map(lineHTML).join("")}</div>`;
+  }).join("") + (carLine ? `<div class="who">${lineHTML(carLine)}</div>` : "");
+  $("trip-errs").hidden = !tripErrs.length;
+  $("trip-errs").innerHTML = tripErrs.map(e => `<li>⚠ ${e}</li>`).join("");
+}
+
+// ---- Events ----
+$("dest-world").onclick = () => { state.dest = "WORLD"; refresh(); };
+$("dest-usa").onclick = () => { state.dest = "USA"; refresh(); };
+$("from").oninput = e => { state.from = e.target.value; $("to").min = state.from; refresh(); };
+$("to").oninput = e => { state.to = e.target.value; refresh(); };
+$("days").oninput = e => { state.manualDays = intv(e.target.value); refresh(); };
+$("car").onchange = e => { state.car = e.target.value === "" ? null : Number(e.target.value); state.carDays = 0; refresh(); };
+$("car-days").oninput = e => { state.carDays = Math.max(1, intv(e.target.value)); refresh(); };
+$("preset").onclick = () => {
+  for (const t of state.travelers) {
+    t.addons.baggage = 1; t.addons.cancel = 1; t.addons.cancelPlus = 0;
+    t.addons.accident = t.age <= 70 ? 1 : 0;
+    if (!t.addons.accident) t.addons.accidentSport = 0;
+    t.open = true;
+  }
+  buildTravelers();
+};
+$("add-traveler").onclick = () => { state.travelers.push({ age: 35, noSar: false, addons: {}, bike: null, open: false }); buildTravelers(); };
+
+$("travelers").addEventListener("click", e => {
+  const rm = e.target.closest("[data-remove]");
+  if (rm) { state.travelers.splice(Number(rm.dataset.remove), 1); buildTravelers(); return; }
+  const tg = e.target.closest("[data-toggle]");
+  if (tg) {
+    const t = state.travelers[Number(tg.dataset.toggle)];
+    t.open = !t.open;
+    tg.setAttribute("aria-expanded", t.open);
+    tg.nextElementSibling.hidden = !t.open;
+    refresh();
+  }
+});
+$("travelers").addEventListener("input", e => {
+  const el = e.target, ti = el.dataset.t;
+  if (ti === undefined) return;
+  const t = state.travelers[Number(ti)], days = tripDays();
+  if (el.dataset.field === "name") t.name = el.value;
+  else if (el.dataset.field === "age") t.age = intv(el.value);
+  else if (el.dataset.field === "noSar") t.noSar = el.checked;
+  else if (el.dataset.addon) {
+    const a = byId(el.dataset.addon);
+    t.addons[a.id] = el.checked ? (a.partial ? Math.max(1, days) : 1) : 0;
+    if (el.checked && a.excludes) a.excludes.forEach(x => t.addons[x] = 0);
+    if (!el.checked) ADDONS.filter(x => x.requires === a.id).forEach(x => t.addons[x.id] = 0);
+  } else if (el.dataset.qty) t.addons[el.dataset.qty] = Math.max(1, intv(el.value));
+  else if (el.dataset.bike === "on") t.bike = el.checked ? { idx: 0, count: 1, days: Math.max(1, Math.min(days, BIKE_MAX_DAYS)) } : null;
+  else if (el.dataset.bike && t.bike) t.bike[el.dataset.bike] = el.dataset.bike === "idx" ? Number(el.value) : Math.max(1, intv(el.value));
+  refresh();
+});
+
+buildTravelers();
+</script>
+</body>
+</html>
