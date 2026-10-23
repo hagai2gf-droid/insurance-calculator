@@ -92,6 +92,32 @@ input.n { width: 64px; padding: 4px 6px; text-align: center; font-family: var(--
 .row .calc { display: block; font-family: var(--font-num); font-size: .74rem; direction: ltr; text-align: right; opacity: .8; }
 .fine { font-size: .75rem; color: var(--muted); }
 @media (prefers-reduced-motion: no-preference) { .seg button, .add { transition: background .15s, color .15s, border-color .15s; } }
+/* Policy information drawer */
+.info-fab { position: fixed; z-index: 20; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); font: inherit; font-weight: 700; padding: 11px 16px; border-radius: 999px; border: 0; background: var(--navy); color: var(--on-navy); cursor: pointer; box-shadow: 0 4px 16px rgba(13, 37, 80, .28); }
+.info-scrim { position: fixed; inset: 0; z-index: 30; background: rgba(8, 16, 32, .45); }
+.info { position: fixed; z-index: 31; top: 0; bottom: 0; left: 0; width: min(560px, 100%); background: var(--surface); color: var(--fg); border-right: 1px solid var(--line); display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.info-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px max(16px, env(safe-area-inset-left, 0px)) 14px 16px; border-bottom: 1px solid var(--line); }
+.info-head h2 { margin: 0; font-size: 1.15rem; }
+.info-x { font: inherit; font-size: 1.1rem; width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; }
+.info-body { overflow-y: auto; padding: 14px 16px 24px; display: grid; gap: 10px; font-size: .9rem; min-width: 0; }
+.info details { border: 1px solid var(--line); border-radius: 10px; padding: 0 14px; min-width: 0; }
+.info details[open] { padding-bottom: 12px; }
+.info summary { cursor: pointer; font-weight: 700; padding: 12px 0; color: var(--accent); }
+.info p { margin: 8px 0; }
+.info ul, .info ol { margin: 6px 0; padding-inline-start: 20px; display: grid; gap: 6px; }
+.info .q > li > b { display: block; }
+.tbl { overflow-x: auto; }
+.info table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+.info th { background: var(--navy); color: var(--on-navy); font-weight: 500; text-align: start; padding: 7px 8px; }
+.info td { border-bottom: 1px solid var(--line); padding: 6px 8px; vertical-align: top; }
+.info td:nth-child(3) { white-space: nowrap; }
+.info td:first-child { min-width: 9em; }
+.info td[rowspan] { white-space: normal; color: var(--muted); vertical-align: middle; }
+.info tr.grp td { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.info ul.chips { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.info ul.chips li { background: var(--accent-soft); color: var(--fg); border-radius: 999px; padding: 3px 10px; font-size: .82rem; }
+@media (prefers-reduced-motion: no-preference) { .info:not([hidden]) { animation: info-in .2s ease-out; } @keyframes info-in { from { transform: translateX(-24px); opacity: 0; } } }
+@media (max-width: 860px) { body { padding-bottom: 80px; } }
 </style>
 </head>
 <body>
@@ -152,6 +178,122 @@ input.n { width: 64px; padding: 4px 6px; text-align: center; font-family: var(--
     </aside>
   </div>
 </div>
+
+<button type="button" class="info-fab" id="info-open" aria-controls="info" aria-expanded="false">📋 מידע על הפוליסה</button>
+<div class="info-scrim" id="info-scrim" hidden></div>
+<aside class="info" id="info" dir="rtl" lang="he" aria-label="מידע על הפוליסה" hidden>
+  <div class="info-head">
+    <h2>מידע על הפוליסה</h2>
+    <button type="button" class="info-x" id="info-close" aria-label="סגירה">✕</button>
+  </div>
+  <div class="info-body">
+
+    <details open>
+      <summary>כיסויי פוליסת הבסיס</summary>
+      <p class="fine">פוליסה אחידה לגילאי 0-95. הפרמיה היומית בכפוף לשאלות החיתום וליעד הנסיעה. ה.ע = השתתפות עצמית.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>הכיסוי</th><th>גבול האחריות</th><th>ה.ע</th></tr></thead>
+        <tbody>
+          <tr class="grp"><td colspan="3">הוצאות רפואיות</td></tr>
+          <tr><td><b>גבול אחריות המבטח להוצאות רפואיות</b></td><td><b>$5,000,000</b></td><td>כמפורט</td></tr>
+          <tr><td>הוצאות רפואיות בחו״ל בעת אשפוז</td><td rowspan="5">כלול בגבול האחריות להוצאות רפואיות</td><td>ללא</td></tr>
+          <tr><td>פינוי יבשתי ממקום האירוע לבי״ח קרוב</td><td>ללא</td></tr>
+          <tr><td>פינוי אווירי ו/או ימי ממקום האירוע לבי״ח קרוב</td><td>ללא</td></tr>
+          <tr><td>הטסה רפואית לישראל</td><td>ללא</td></tr>
+          <tr><td>הוצאות רפואיות בחו״ל שלא בעת אשפוז, כגון רופא ובדיקות אבחון</td><td>ללא</td></tr>
+          <tr><td>תרופות</td><td>$1,500</td><td>$50</td></tr>
+          <tr><td>טיפול חירום בשיניים</td><td>$400</td><td>$50</td></tr>
+          <tr><td>פיזיותרפיה בחו״ל</td><td>$500 לטיפול, עד 6 טיפולים</td><td>$50</td></tr>
+          <tr><td>המשך טיפול בישראל עקב תאונה שארעה בחו״ל</td><td>$10,000, עד 120 יום</td><td>ללא</td></tr>
+          <tr><td>הורדת גבס, הוצאת מסמרים ופיזיותרפיה בישראל (כלול בגבול של המשך טיפול בישראל)</td><td>$6,000</td><td>20% לטיפול</td></tr>
+          <tr class="grp"><td colspan="3">הוצאות מיוחדות (כלול)</td></tr>
+          <tr><td><b>החזר הוצאות עקב שהות בחו״ל מעבר לתקופת הביטוח</b></td><td>כמפורט להלן</td><td></td></tr>
+          <tr><td>הוצאות לינה בחו״ל מעבר לתקופת הביטוח</td><td>$150 ליום</td><td>$50</td></tr>
+          <tr><td>כרטיס נסיעה לישראל למבוטח</td><td>$1,000</td><td>$50</td></tr>
+          <tr><td>הטסת מלווה ושהייה במקום אשפוזו של המבוטח בחו״ל</td><td>$2,500</td><td>$50</td></tr>
+          <tr><td>היריון שאובחן לראשונה בחו״ל: הוצאות רפואיות שלא בעת אשפוז</td><td rowspan="3">כלול בגבול האחריות להוצאות רפואיות</td><td>$50</td></tr>
+          <tr><td>היריון שאובחן לראשונה בחו״ל: הוצאות רפואיות בעת אשפוז</td><td>$50</td></tr>
+          <tr><td>הוצאות העברת גופה</td><td></td></tr>
+          <tr class="grp"><td colspan="3">כיסויים הכלולים שניתן להסיר</td></tr>
+          <tr><td>חיפוש, איתור וחילוץ (הראל חילוץ והצלה) · $0.20 ליום</td><td>$250,000</td><td>ללא</td></tr>
+          <tr><td>חבות כלפי צד ג׳ · ללא עלות</td><td>$150,000</td><td>ללא</td></tr>
+        </tbody>
+      </table></div>
+    </details>
+
+    <details>
+      <summary>מצב רפואי קיים</summary>
+      <p><b>מקרים שבהם אין צורך להוסיף הרחבה למצב רפואי קיים</b> (גבול אחריות $350,000, ללא ה.ע):</p>
+      <ul class="chips">
+        <li>טיפול הורמונלי לגיל המעבר</li><li>ויטמינים או תוספי מזון</li><li>אלרגיה</li><li>גלולות למניעת הריון</li>
+        <li>כולסטרול</li><li>תת פעילות בלוטת התריס</li><li>קשב וריכוז</li><li>לחץ דם</li>
+        <li>בעיות שינה</li><li>מיגרנות</li><li>צרבות</li><li>ערמונית מוגדלת</li>
+      </ul>
+      <p><b>מקרים שאינם נחשבים לנסיעה שמטרתה טיפול רפואי בחו״ל:</b> טיפולי שיניים, השתלת שיער וטיפולים קוסמטיים, בתנאי שההליך <b>לא</b> כולל הרדמה מלאה.</p>
+      <p>ניתן להפיק פוליסה עם הרחבה למצב רפואי קיים גם אם חל שינוי רפואי בחצי השנה האחרונה, לכל היעדים למעט ארה״ב, בתנאי שהנסיעה אינה עולה על 15 יום.</p>
+    </details>
+
+    <details>
+      <summary>שאלון חיתום מקל בהראל</summary>
+      <ol class="q">
+        <li>
+          <b>האם אחת ממטרות הנסיעה היא קבלת טיפול רפואי, ייעוץ רפואי או אבחון רפואי?</b>
+          <p>אין צורך לסמן "כן" אם מדובר בטיפולי שיניים, השתלת שיער או טיפולים קוסמטיים, כל עוד ההליך לא כולל הרדמה מלאה.</p>
+        </li>
+        <li>
+          <b>האם בחצי השנה האחרונה הנך מקבל תרופות באופן קבוע, או עברת טיפול רפואי אחר*, או הומלץ לך לקבל תרופות או לעבור טיפול רפואי אחר?</b>
+          <p class="fine">*טיפול רפואי אחר = <b>כל</b> סוג של טיפול, ניתוח, אשפוז או בדיקה שתוצאותיה אינן תקינות.</p>
+          <p>אין צורך לסמן "כן" אם מדובר בטיפול הורמונלי לגיל המעבר, ויטמינים או תוספי מזון, אלרגיה, גלולות למניעת הריון, כולסטרול, תת פעילות בלוטת המגן, קשב וריכוז, לחץ דם, בעיות שינה, צרבות, ערמונית מוגדלת, מיגרנות, תרופת הרזיה שלא ניתנה בעקבות סוכרת, אקנה ונשירת שיער.</p>
+          <ul>
+            <li>האם הטיפול המוצהר הוא לאחד או יותר מהמצבים הבאים: אי ספיקת כליות עם טיפול בדיאליזה; מחלות דם עם טיפול פעיל בעירוי דם/הקזות; מחלות ממאירות בטיפול פעיל של הקרנות, כימותרפיה או טיפול ביולוגי; ירידה בזיכרון או בהתמצאות המצריכה השגחה או ליווי; תופעה או מחלה במערכת העצבים, לרבות אירוע מוחי או מחלה ניוונית כדוגמת ALS, שבגינן קיים חוסר יציבות או נפילות חוזרות; מחלה או תופעה הדורשת שימוש במחולל חמצן; שחמת כבד עם סיבוכים כגון דימומים, צורך בהשתלה, מיימת (הצטברות נוזלים), אי ספיקת כבד?</li>
+            <li>האם הטיפול המוצהר הוא עקב אי ספיקת לב עם אחת או יותר מהתופעות הבאות: בצקות, המלצה לטיפול או קבלה של תרופות להוצאת נוזלים מהגוף (מגבירות מתן שתן), קוצר נשימה במנוחה או במאמץ קל (הליכה, עליית מדרגות)?</li>
+          </ul>
+        </li>
+        <li>
+          <b>האם בחצי השנה האחרונה עברת או הומלץ לך על ניתוח, או אושפזת מעל 3 ימים, או הומלץ לך על אשפוז, עקב אחד או יותר מהנושאים הבאים: מחלת נפש, ראש, לב (לרבות צנתור), כיס מרה ודרכי המרה, כליות (לרבות אבנים בכליות ובדרכי השתן), דרכי עיכול ולבלב, ריאות, עמוד שדרה?</b>
+          <ul><li>האם הניתוח או האשפוז כבר בוצע, וחלפו מאז למעלה מ-3 חודשים?</li></ul>
+        </li>
+        <li>
+          <b>האם הופנית במהלך חצי השנה האחרונה לבדיקות שטרם בוצעו, או שתוצאותיהן לא היו תקינות או כללו ממצא רפואי חריג? פירוט הבדיקות: CT ראש / MRI ראש.</b>
+        </li>
+      </ol>
+    </details>
+
+    <details>
+      <summary>יתרונות ביטוח נסיעות חו״ל הראל</summary>
+      <ul class="adv">
+        <li><b>הפקה מראש:</b> ניתן להפיק את הפוליסה 365 יום לפני היציאה, ולכסות את דמי הביטול מיום ההפקה ועד היציאה (בתנאי שנרכשה הרחבה לביטול וקיצור נסיעה).</li>
+        <li><b>נסיעות ארוכות:</b> לקוח עד גיל 50 רשאי לרכוש ביטוח ל-365 יום בפעם אחת, בלי תמחור של פוליסות רילוקיישן היקרות מאוד.</li>
+        <li><b>ביטוח עד גיל 95 גם לבריאים:</b> החיתום הדיגיטלי אינו מחייב הרחבה למצב רפואי קיים בגלל הגיל.</li>
+        <li><b>חיתום בלי מסמכים רפואיים:</b> לקוח שעבר שינוי רפואי בחצי השנה האחרונה אינו נדרש לצרף מסמכים אם הנסיעה פחות מ-15 יום ואינה כוללת את ארה״ב.</li>
+        <li><b>בלעדי, כיסוי למצב רפואי-נפשי:</b> הפוליסה מכסה לקוח שאובחן עם בעיה נפשית, בתנאי שנרכשה הרחבה למצב רפואי קיים.</li>
+        <li><b>חיתום דיגיטלי מקל:</b> טופס דיגיטלי פשוט באתר המבטח. גם לקוח שנוטל יותר מתרופה אחת מהרשימה שאינה מצריכה הרחבה נחשב תחת פוליסת הבריאים.</li>
+        <li><b>פוליסה שנתית:</b> מגבלת ימים רחבה לכל נסיעה, בין 45 ל-60 יום לפי גיל המבוטח, כולל כיסוי לטלפון נייד ללא תוספת תשלום.</li>
+        <li><b>קיבוע תנאי חיתום:</b> לקוח שענה בכנות על החיתום הדיגיטלי, וחל שינוי במצבו הרפואי מיום ההפקה ועד היציאה, לא יידחה ולא יוחרג. מצבו החדש יכוסה בפוליסה הקיימת, ללא תוספת פרמיה.</li>
+        <li><b>eSIM:</b> באפליקציית הראל חו״ל ניתן לרכוש חבילות שיחות וגלישה בהנחה של 20%.</li>
+        <li><b>המשך טיפול בישראל:</b> עד 120 יום אחרי החזרה, כלול בפוליסה, גם מול מוסדות רפואיים פרטיים, בלי להמתין לתורים בקופת החולים.</li>
+        <li><b>תאונות אישיות:</b> עד גיל 70, במקרה של מוות, נכות, כוויות, שברים ואשפוז עקב תאונה. ניתן להגדיל גם לספורט אתגרי.</li>
+        <li><b>ספורט אתגרי:</b> ניתן להוסיף גם אחרי היציאה מהארץ, עד גיל 85, וניתן להגדיל לספורט מקצועי.</li>
+        <li><b>ספורט חורף:</b> עד גיל 80.</li>
+        <li><b>כבודה:</b> גם גניבה עקב פריצה לרכב מכוסה כאובדן או גניבה רגילים. מחשב נייד או מצלמה בלי הרחבה מיוחדת מכוסים עד $300. ניתן להגדיל לכיסוי מיוחד עד $2,000 לגלשן, רחפן, תשמישי קדושה, כיסא גלגלים, קלנועית ומצלמה. הכיסוי אינו כולל שבר, נזק או קלקול.</li>
+        <li><b>ביטול וקיצור נסיעה:</b>
+          <ul>
+            <li>לא שואלים על מצבו הרפואי של קרוב המשפחה, ולכן הכיסוי חל באירוע רפואי חדש של קרוב שמצבו היה יציב (לא היה מאושפז) ביום ההפקה.</li>
+            <li>הכיסוי חל גם באירוע מחלתי שבו הרופא ציין את הסיבה הרפואית ואסר לטוס לפחות 7 ימים, בשבוע שלפני הטיסה.</li>
+            <li>בלעדי: החזר עד $1,000 למבוטח עקב אשפוז מעל 48 שעות, גם כשאין צורך לקצר את הנסיעה.</li>
+            <li>באירוע רפואי של המבוטח ושל המלווה לנסיעה: מוות, תאונה, מחלה.</li>
+            <li>צו 8 / 9 לחיילים ולשוטרים, לפני היציאה ואחריה, גם למשפחה הגרעינית של מקבל הצו.</li>
+            <li>מכסה כרטיסי טיסה, שירותי קרקע וכרטיסים להופעות, כדורגל וכדומה, ללא תוספת תשלום.</li>
+          </ul>
+        </li>
+        <li><b>Air Doctor:</b> ייעוץ וטיפול רפואי בסביבת הלקוח בחו״ל, ללא תשלום.</li>
+        <li><b>ארנק דיגיטלי הראל &amp; LAYA:</b> החזר על תשלום רפואי (תרופות, רופא, טיפול) תוך 7 שעות, ללא עלות מט״ח ל-8 מטבעות, בישראל ובחו״ל, מתחבר ל-Google Wallet.</li>
+      </ul>
+    </details>
+
+    <p class="fine">בכל מקרה של סתירה בין המידע כאן לתנאי הפוליסה המלאים, יגברו תנאי הפוליסה כפי שהופקו מאתר המבטח.</p>
+  </div>
+</aside>
 
 <script>
 // ---- Rate sheet: Harel Darkon FIRST CLASS, agents' price list 2026 (USD per insured per day) ----
@@ -387,6 +529,17 @@ $("travelers").addEventListener("input", e => {
 });
 
 buildTravelers();
+
+// ---- Policy information drawer ----
+function setInfo(open) {
+  $("info").hidden = !open; $("info-scrim").hidden = !open;
+  $("info-open").setAttribute("aria-expanded", open);
+  if (open) $("info-close").focus(); else $("info-open").focus();
+}
+$("info-open").onclick = () => setInfo(true);
+$("info-close").onclick = () => setInfo(false);
+$("info-scrim").onclick = () => setInfo(false);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("info").hidden) setInfo(false); });
 </script>
 </body>
 </html>
