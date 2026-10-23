@@ -116,6 +116,13 @@ input.n { width: 64px; padding: 4px 6px; text-align: center; font-family: var(--
 .info tr.grp td { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
 .info ul.chips { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .info ul.chips li { background: var(--accent-soft); color: var(--fg); border-radius: 999px; padding: 3px 10px; font-size: .82rem; }
+.info h3 { font-size: .95rem; margin: 14px 0 6px; }
+.info a { color: var(--accent); }
+.info ul.links { list-style: none; padding: 0; gap: 8px; }
+.info ul.links li { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+.info ul.links a { font-weight: 500; }
+.info ul.links small { display: block; color: var(--muted); font-size: .8rem; margin-top: 2px; }
+.info table.people td { white-space: nowrap; }
 @media (prefers-reduced-motion: no-preference) { .info:not([hidden]) { animation: info-in .2s ease-out; } @keyframes info-in { from { transform: translateX(-24px); opacity: 0; } } }
 @media (max-width: 860px) { body { padding-bottom: 80px; } }
 </style>
@@ -288,6 +295,42 @@ input.n { width: 64px; padding: 4px 6px; text-align: center; font-family: var(--
         </li>
         <li><b>Air Doctor:</b> ייעוץ וטיפול רפואי בסביבת הלקוח בחו״ל, ללא תשלום.</li>
         <li><b>ארנק דיגיטלי הראל &amp; LAYA:</b> החזר על תשלום רפואי (תרופות, רופא, טיפול) תוך 7 שעות, ללא עלות מט״ח ל-8 מטבעות, בישראל ובחו״ל, מתחבר ל-Google Wallet.</li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>אנשי קשר ומוקדי סיוע</summary>
+
+      <h3>קישורים לנוחיותך</h3>
+      <ul class="links">
+        <li><a href="https://www.harel-group.co.il/insurance/travel/policies/doclib/%D7%AA%D7%A0%D7%90%D7%99%20%D7%A4%D7%95%D7%9C%D7%99%D7%A1%D7%AA%20%D7%91%D7%99%D7%98%D7%95%D7%97%20%D7%A0%D7%A1%D7%99%D7%A2%D7%95%D7%AA%20%D7%9C%D7%97%D7%95%D7%9C%20first%20class.pdf" target="_blank" rel="noopener">תנאי פוליסה First Class (כולל הרחבות)</a><small>אתר הראל</small></li>
+        <li><a href="https://drive.google.com/open?id=1vB5t6m_MlrnBA78oHj_Jj-tKAI_a1tzA&amp;usp=drive_fs" target="_blank" rel="noopener">כל הטפסים ב"דרייב של הראל"</a><small>בקשות, תביעות וטפסים · Google Drive</small></li>
+        <li><a href="https://www.harel-group.co.il/Insurance/travel/claim/Pages/abroad-claim-apply.aspx" target="_blank" rel="noopener">הגשת תביעה דיגיטלית</a><small>הוצאות רפואיות בחו״ל, ביטול או קיצור נסיעה, כבודה</small></li>
+        <li><a href="https://www.air-dr.com/webapp/?data=eyJjIjoiNjIifQ" target="_blank" rel="noopener">Air Doctor: רופאים בסביבת הלקוח</a><small>רופאים בהסדר, הלקוח לא משלם להם בעת הביקור · גם באפליקציית הראל חו״ל</small></li>
+      </ul>
+
+      <h3>מחלקת ביטוחי נסיעות חו״ל</h3>
+      <div class="tbl"><table class="people">
+        <thead><tr><th>שם</th><th>תפקיד</th><th>מייל</th><th>נייד</th><th>טלפון</th></tr></thead>
+        <tbody>
+          <tr><td>אליהו אופיר</td><td>מנהל סוכנות</td><td><a href="mailto:eli@ophirins.co.il">eli@ophirins.co.il</a></td><td><a href="tel:052-5335440">052-5335440</a></td><td></td></tr>
+          <tr><td>הדר גלעד</td><td>מנהל מכירות ושיווק</td><td><a href="mailto:hadar@ophirins.co.il">hadar@ophirins.co.il</a></td><td><a href="tel:052-5334040">052-5334040</a></td><td><a href="tel:073-2721111">073-2721111</a></td></tr>
+          <tr><td>מוקד סוכנים</td><td>מזכירות</td><td><a href="mailto:ophir@ophirins.co.il">ophir@ophirins.co.il</a></td><td></td><td><a href="tel:073-2721110">073-2721110</a></td></tr>
+          <tr><td>רני אופיר</td><td>אופרציה וסוכנים</td><td><a href="mailto:rani@ophirins.co.il">rani@ophirins.co.il</a></td><td><a href="tel:052-4444244">052-4444244</a></td><td><a href="tel:073-2721110">073-2721110</a></td></tr>
+          <tr><td>אורית אופיר</td><td>תביעות</td><td><a href="mailto:Orit_o@ophirins.co.il">Orit_o@ophirins.co.il</a></td><td></td><td><a href="tel:073-2721110">073-2721110</a></td></tr>
+          <tr><td>אורית כהן</td><td>גבייה והנה״ח</td><td><a href="mailto:Orit_c@ophirins.co.il">Orit_c@ophirins.co.il</a></td><td><a href="tel:052-2862820">052-2862820</a></td><td></td></tr>
+          <tr><td>גלעד כרמונה</td><td>מקדם מכירות כללי</td><td><a href="mailto:gilad@ophirins.co.il">gilad@ophirins.co.il</a></td><td><a href="tel:052-2566014">052-2566014</a></td><td></td></tr>
+          <tr><td>ענבר פרץ-כהן</td><td>מקדמת מכירות, צפון</td><td><a href="mailto:peretzi@shirbit.co.il">peretzi@shirbit.co.il</a></td><td><a href="tel:050-8918161">050-8918161</a></td><td></td></tr>
+          <tr><td>אושרי איפרגן</td><td>מקדם מכירות, מרכז-דרום</td><td><a href="mailto:oshri@ophirins.co.il">oshri@ophirins.co.il</a></td><td><a href="tel:052-3863248">052-3863248</a></td><td></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>יצירת קשר למבוטח: מוקד חירום חו״ל "הראל"</h3>
+      <ul class="links">
+        <li><b>מוקד לסיוע רפואי בחו״ל 24/7</b> (טיפול רפואי, שיחה עם רופא מישראל)<small>טלפון: <a href="tel:+97237547030" dir="ltr">972-3-7547030</a> · וואטסאפ: <a href="https://wa.me/972527544589" target="_blank" rel="noopener" dir="ltr">052-7544589</a> · פקס: <span dir="ltr">972-3-7348168</span></small></li>
+        <li><b>חיוג בישראל</b>, א׳-ה׳ 08:00-16:00<small><a href="tel:+97237547080" dir="ltr">972-3-7547080</a> · <a href="https://www.harel-group.co.il/contact" target="_blank" rel="noopener">ליצירת קשר באתר הראל</a></small></li>
+        <li><b>שיחת WiFi חינם</b> עם מרכז הסיוע, למבוטח שאין לו קו סלולרי בחו״ל<small><a href="https://u.ms1.co.il/G3qHC" target="_blank" rel="noopener" dir="ltr">https://u.ms1.co.il/G3qHC</a></small></li>
+        <li><b>הגשת תביעה בחו״ל דרך אפליקציית "הראל"</b> (איחור כבודה, רופא, מרשם)<small><a href="https://apps.apple.com/il/app/id1493917180" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=com.harel360rn" target="_blank" rel="noopener">Google Play</a></small></li>
       </ul>
     </details>
 
